@@ -18,6 +18,7 @@ export default function StreamPlayer({
   title,
   onStreamEnd 
 }: StreamPlayerProps) {
+  const [isMinimized, setIsMinimized] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.8);
@@ -178,20 +179,35 @@ export default function StreamPlayer({
     }
   };
 
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
   const toggleFullscreen = () => {
     if (containerRef.current) {
       if (!isFullscreen) {
         if (containerRef.current.requestFullscreen) {
           containerRef.current.requestFullscreen();
+          setIsFullscreen(true);
         }
       } else {
         if (document.exitFullscreen) {
           document.exitFullscreen();
+          setIsFullscreen(false);
         }
       }
-      setIsFullscreen(!isFullscreen);
     }
   };
+
+  // Listen for fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   const handleVideoError = () => {
     console.error('Stream error occurred');
@@ -213,7 +229,7 @@ export default function StreamPlayer({
     return (
       <div 
         ref={containerRef}
-        className="aspect-video bg-gradient-to-br from-zinc-900 to-black rounded-lg flex flex-col items-center justify-center relative border-2 border-red-500/30"
+        className={`${isMinimized ? 'aspect-video w-80' : 'aspect-video'} bg-gradient-to-br from-zinc-900 to-black rounded-lg flex flex-col items-center justify-center relative border-2 border-red-500/30`}
         onMouseMove={resetControlsTimeout}
       >
         {/* Offline State */}
@@ -242,7 +258,7 @@ export default function StreamPlayer({
   return (
     <div 
       ref={containerRef}
-      className="aspect-video bg-black rounded-lg relative overflow-hidden border-2 border-red-500"
+      className={`${isMinimized ? 'aspect-video w-80' : 'aspect-video'} bg-black rounded-lg relative overflow-hidden border-2 border-red-500`}
       onMouseMove={resetControlsTimeout}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -330,12 +346,20 @@ export default function StreamPlayer({
 
               {/* Right Controls */}
               <div className="flex items-center space-x-4">
+                <button 
+                  onClick={toggleMinimize}
+                  className="text-white hover:text-red-400 transition-colors"
+                  title={isMinimized ? "Expand" : "Minimize"}
+                >
+                  {isMinimized ? "□" : "−"}
+                </button>
                 <button className="text-white hover:text-red-400 transition-colors">
                   <Cog6ToothIcon className="w-6 h-6" />
                 </button>
                 <button
                   onClick={toggleFullscreen}
                   className="text-white hover:text-red-400 transition-colors"
+                  title="Fullscreen"
                 >
                   <ArrowsPointingOutIcon className="w-6 h-6" />
                 </button>
