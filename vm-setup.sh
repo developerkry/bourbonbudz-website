@@ -102,7 +102,7 @@ http {
     
     server {
         listen 80;
-        server_name 34.55.39.199;
+        server_name bourbonbudz.duckdns.org 34.55.39.199;
         
         # Serve HLS files
         location /hls {
@@ -166,12 +166,12 @@ if [ ! -f ".env" ]; then
 DATABASE_URL="file:./dev.db"
 
 # NextAuth
-NEXTAUTH_URL="http://34.55.39.199"
+NEXTAUTH_URL="http://bourbonbudz.duckdns.org"
 NEXTAUTH_SECRET="your-secret-key-here"
 
 # Stream settings
-RTMP_SERVER_URL="rtmp://34.55.39.199/live"
-HLS_BASE_URL="http://34.55.39.199/hls"
+RTMP_SERVER_URL="rtmp://bourbonbudz.duckdns.org/live"
+HLS_BASE_URL="http://bourbonbudz.duckdns.org/hls"
 
 # Add your other environment variables here
 EOF
@@ -196,12 +196,12 @@ echo "   pm2 startup"
 echo "   pm2 save"
 echo ""
 echo "📡 Streaming URLs:"
-echo "   RTMP Ingest: rtmp://34.55.39.199/live/YOUR_STREAM_KEY"
-echo "   HLS Playback: http://34.55.39.199/hls/YOUR_STREAM_KEY.m3u8"
+echo "   RTMP Ingest: rtmp://bourbonbudz.duckdns.org/live/YOUR_STREAM_KEY"
+echo "   HLS Playback: http://bourbonbudz.duckdns.org/hls/YOUR_STREAM_KEY.m3u8"
 echo ""
-echo "🌐 Website: http://34.55.39.199"
+echo "🌐 Website: http://bourbonbudz.duckdns.org"
 echo ""
 echo "🔧 OBS Setup:"
-echo "   Server: rtmp://34.55.39.199/live"
+echo "   Server: rtmp://bourbonbudz.duckdns.org/live"
 echo "   Stream Key: [Your stream key]"
 echo ""
