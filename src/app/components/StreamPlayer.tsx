@@ -19,6 +19,7 @@ export default function StreamPlayer({
   onStreamEnd 
 }: StreamPlayerProps) {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.8);
@@ -183,6 +184,10 @@ export default function StreamPlayer({
     setIsMinimized(!isMinimized);
   };
 
+  const toggleSettings = () => {
+    setShowSettings(!showSettings);
+  };
+
   const toggleFullscreen = () => {
     if (containerRef.current) {
       if (!isFullscreen) {
@@ -291,36 +296,13 @@ export default function StreamPlayer({
       {/* Controls Overlay */}
       {showControls && (
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20">
-          {/* Center Play/Pause Button */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <button
-              onClick={togglePlay}
-              className="w-16 h-16 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
-            >
-              {isPlaying ? (
-                <PauseIcon className="w-8 h-8 text-white" />
-              ) : (
-                <PlayIcon className="w-8 h-8 text-white ml-1" />
-              )}
-            </button>
-          </div>
-
+          {/* Volume and Settings Controls Only - No Play/Pause for Live Streams */}
+          
           {/* Bottom Controls */}
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <div className="flex items-center justify-between">
-              {/* Left Controls */}
+              {/* Left Controls - Volume Only */}
               <div className="flex items-center space-x-4">
-                <button
-                  onClick={togglePlay}
-                  className="text-white hover:text-red-400 transition-colors"
-                >
-                  {isPlaying ? (
-                    <PauseIcon className="w-6 h-6" />
-                  ) : (
-                    <PlayIcon className="w-6 h-6" />
-                  )}
-                </button>
-
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={toggleMute}
@@ -345,7 +327,7 @@ export default function StreamPlayer({
               </div>
 
               {/* Right Controls */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 relative">
                 <button 
                   onClick={toggleMinimize}
                   className="text-white hover:text-red-400 transition-colors"
@@ -353,9 +335,49 @@ export default function StreamPlayer({
                 >
                   {isMinimized ? "□" : "−"}
                 </button>
-                <button className="text-white hover:text-red-400 transition-colors">
-                  <Cog6ToothIcon className="w-6 h-6" />
-                </button>
+                
+                {/* Settings Dropdown */}
+                <div className="relative">
+                  <button 
+                    onClick={toggleSettings}
+                    className="text-white hover:text-red-400 transition-colors"
+                    title="Settings"
+                  >
+                    <Cog6ToothIcon className="w-6 h-6" />
+                  </button>
+                  
+                  {showSettings && (
+                    <div className="absolute bottom-full right-0 mb-2 bg-black/90 backdrop-blur-sm rounded-lg p-4 min-w-48 border border-gray-600">
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-white text-sm font-medium block mb-2">Quality</label>
+                          <select className="w-full bg-gray-700 text-white rounded px-3 py-1 text-sm">
+                            <option value="auto">Auto</option>
+                            <option value="1080p">1080p</option>
+                            <option value="720p">720p</option>
+                            <option value="480p">480p</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-white text-sm font-medium block mb-2">Playback Speed</label>
+                          <select className="w-full bg-gray-700 text-white rounded px-3 py-1 text-sm">
+                            <option value="1">1x (Normal)</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                          </select>
+                        </div>
+                        <div className="pt-2 border-t border-gray-600">
+                          <div className="text-xs text-gray-400">
+                            <div>🔴 LIVE STREAM</div>
+                            <div>Latency: ~5-10 seconds</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
                 <button
                   onClick={toggleFullscreen}
                   className="text-white hover:text-red-400 transition-colors"
